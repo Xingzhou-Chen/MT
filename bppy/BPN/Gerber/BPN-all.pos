@@ -1,0 +1,39 @@
+### Footprint positions - created on  ###
+### Printed by KiCad version 7.0.9
+## Unit = mm, Angle = deg.
+## Side : All
+# Ref     Val                            Package                                                      PosX       PosY       Rot  Side
+C1        C_Polarized                    CP_Elec_3x5.3                                             25.7628    42.5776    0.0000  top
+C2        10u                            CP_Elec_3x5.3                                             26.4700    48.4352  -90.0000  top
+C3        10u                            CP_Elec_3x5.3                                             26.4192    54.4804  -90.0000  top
+C4        1u                             CP_Elec_3x5.3                                              5.5684    25.3056  180.0000  top
+C5        100n                           CP_Elec_3x5.3                                              5.5952    19.1588  180.0000  top
+C6        100n                           CP_Elec_3x5.3                                             34.5272     4.3252  -90.0000  top
+C7        100n                           CP_Elec_3x5.3                                             34.4764    10.7020  -90.0000  top
+D1        LED                            LED_D3.0mm_FlatTop                                        18.2862    56.1596    0.0000  top
+D2        1N4001                         D_3220_8050Metric                                         18.9824     9.2907  -90.0000  top
+D3        1N4001                         D_3220_8050Metric                                         17.6872    21.9650    0.0000  top
+J1        USB_C_Receptacle_PowerOnly_6P  USB_C_Receptacle_GCT_USB4135-GF-A_6P_TopMnt_Horizontal    11.4840    63.1684  180.0000  top
+J2        Valve                          PinHeader_1x02_P1.00mm_Vertical                           27.8216    10.8147  180.0000  top
+J3        Pumpe                          PinHeader_1x02_P1.00mm_Vertical                           19.7444    29.6076    0.0000  top
+Q1        2N2219                         TO-39-3                                                   40.4708     7.0684    0.0000  top
+Q2        IRLIZ44N                       TO254P1054X469X1930-3                                     25.3072    24.4420  -90.0000  top
+R1        5.1k                           R_0603_1608Metric                                          8.6392    55.9934  180.0000  top
+R2        5.1k                           R_0603_1608Metric                                         11.6872    56.0056  180.0000  top
+R3        2.5k                           R_0603_1608Metric                                         14.7860    56.0056  180.0000  top
+R4        820                            R_0603_1608Metric                                         19.3380    49.8806  -90.0000  top
+R5        510                            R_0603_1608Metric                                         19.3580    46.8374  -90.0000  top
+R6        100k                           R_0603_1608Metric                                         10.6244    25.3056   90.0000  top
+R7        33k                            R_0603_1608Metric                                         10.6366    22.1052   90.0000  top
+R8        100k                           R_0603_1608Metric                                         10.6244    19.0064   90.0000  top
+R9        100k                           R_0603_1608Metric                                         29.3578     6.1411   90.0000  top
+R10       10                             R_0603_1608Metric                                         26.2976     6.1540   90.0000  top
+R11       4.7k                           R_0603_1608Metric                                         27.1612    37.2822  -90.0000  top
+R12       4.7k                           R_0603_1608Metric                                         23.8592    37.2314   90.0000  top
+R13       1.2k                           R_0603_1608Metric                                         26.1838    32.6716   90.0000  top
+U1        LM317_TO-220                   TO-220-3_Vertical                                         14.2780    49.4338  180.0000  top
+U2        NCP1117-3.3_SOT223             SOT-223                                                   25.1460    62.7496  180.0000  top
+U3        Pico                           RPi_Pico_SMD_TH                                           45.0936    40.6472    0.0000  top
+U4        NJM4560                        DIP762W46P254L880H425Q8                                    9.1272     8.6432  -90.0000  top
+U5        AMS6915                        AMS_6915_FP                                                8.1620    33.7892   90.0000  top
+## End
