@@ -6,9 +6,9 @@ x=[]
 y=[]
 w=[]
 filtered=[]
-# file_path = "owm_mat.csv"
-# df_before = pd.read_csv(file_path)
-# df_before.plot(x=df_before.index[0],title="Pressure_Curve",xlabel="Time/s",ylabel="Pressure/mbar",legend=False)
+file_path = "pressure.csv"
+df_before = pd.read_csv(file_path)
+df_before.plot(x=df_before.index[0],title="Pressure_Curve",xlabel="Time/s",ylabel="Pressure/mbar",legend=False)
 
 def filter(p,W):
         for i in range(len(p)):

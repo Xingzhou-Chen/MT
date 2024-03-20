@@ -5,11 +5,10 @@ import csv
 x=[]
 y=[]
 w=[]
-# filtered_array=[]
 filtered=[]
-# file_path = "owm_mat.csv"
-# df_before = pd.read_csv(file_path)
-# df_before.plot(x=df_before.index[0],title="Pressure_Curve",xlabel="Time/s",ylabel="Pressure/mbar",legend=False)
+file_path = "pressure.csv"
+df_before = pd.read_csv(file_path)
+df_before.plot(x=df_before.index[0],title="Pressure_Curve",xlabel="Time/s",ylabel="Pressure/mbar",legend=False)
 
 def filter(p,W):
         for i in range(len(p)):
@@ -39,7 +38,7 @@ def filter(p,W):
 
 if __name__== '__main__':
 
-    with open('owm_mat.csv','r') as file:
+    with open('pressure.csv','r') as file:
         tests=csv.reader(file)
         for test in tests:
 #         print(test)
@@ -51,7 +50,7 @@ if __name__== '__main__':
         for weight in weights:
 #         print(test)
             w.append(float(weight[0]))
-            
+    print(w)  
     filtered=filter(y,w)
 #     print(w)
 #     plt.plot(x,y)

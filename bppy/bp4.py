@@ -3,11 +3,11 @@ from machine import I2C,Pin,PWM
 from utime import sleep
 import time 
 
-valve = PWM(Pin(9))
+valve = PWM(Pin(11))
 valve.freq(10000)
 
 i2c = I2C(id=1,scl=Pin(7),sda=Pin(6),freq=100000)
-pump = Pin(26,Pin.OUT)
+pump = Pin(10,Pin.OUT)
 # valve = machine.Pin(27,machine.Pin.OUT)
 
 Target_Pressure=300
@@ -15,7 +15,7 @@ read_delay=1000
 release_speed=65535
 P_end=50
 T_end=45
-sensor_address=0x29
+sensor_address=0x28
 range_max=400
 Kp=0.4
 Ki=0.05
