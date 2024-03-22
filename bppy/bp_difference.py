@@ -2,37 +2,215 @@ from machine import I2C,Pin,PWM
 from utime import sleep
 import time
 
-valve = PWM(Pin(16))
-valve.freq(100000)
+L_co=0.05
+
+valve_f = PWM(Pin(15))
+valve_f.freq(100000)
+
+valve_b = PWM(Pin(16))
+valve_b.freq(100000)
+
+valve_m = Pin(14,Pin.OUT)
+pump = Pin(13,Pin.OUT)
+
+max_pwm_f=35000
+min_pwm_f=21000
+
+max_pwm_b=35000
+min_pwm_b=10000
+
+Target_Pressure=170
+
+P_end=60
+T_end=40
+
+Kp_f=200
+Ki_f=1300
+Kd_f=0
+
+Kp_b=80
+Ki_b=500
+Kd_b=0
+
+last_err=0
+next_err=0
+err=0
+k=0
+filtered_p=0
+
+
 i2c = I2C(id=0,scl=Pin(9),sda=Pin(8),freq=100000)
 # pump = Pin(16,Pin.OUT)
-sensor_address=0x28
-range_max=400
+sensor_b=0x29
+sensor_m=0x28
+sensor_f=0x30
+
+range_b_max=300
+range_b_min=0
+
+range_m_max=30
+range_m_min=0
+
+range_f_max=300
+range_f_min=0
 
 def pump_on():
+    pump.value(1)
+    
+def pump_off():
     pump.value(0)
 
-def valve_on(pwm):
-    valve.duty_u16(pwm)
+def midval_off():
+    valve_m.value(0)
 
+def midval_on():
+    valve_m.value(1)
+    
+def frontvalve_on(pwm):
+    valve_f.duty_u16(pwm)
+
+def frontvalve_off():
+    valve_f.duty_u16(65535)
+    
+def backvalve_on(pwm):
+    valve_b.duty_u16(pwm)
+
+def backvalve_off():
+    valve_b.duty_u16(65535)
+#     valve_b.duty_u16(0)
+    
 def read(address,pmin,pmax):
     data=i2c.readfrom(address,4)
     pressureM=data[0]
     pressureL=data[1]
     pressure = (((256*(pressureM&0x3F)+pressureL)-1638.0)*(pmax-pmin)/13107+pmin)
     pressure=round(pressure,2)
-    return pressure*0.75
+    return pressure
+
+def release():
+    valve_f.duty_u16(0)
+    valve_b.duty_u16(0)
+    midval_on()
+
+ 
+def calculate_ref(P_init,T_end,current_t):
+    global k
+    k=(P_end-P_init)/T_end
+    P_ref=k*current_t+P_init
+    return P_ref
+
+def calculate_ref_b(k,P_init,current_t):
+#     print(k,P_init,current_t)
+    P_ref_b=k*current_t+P_init
+#     print(P_ref_b)
+    return P_ref_b
+
+
+def value_calibrate_f(v):
+    if(v>max_pwm_f or v<min_pwm_f): return max_pwm_f
+    else: return v
+
+def value_calibrate_b(v):
+    if(v>max_pwm_b or v<min_pwm_b): return max_pwm_b
+    else: return v
+    
+def PID_control(Kp,Ki,Kd,set_point,current_p,current_t):
+    global err
+    global last_err
+    global next_err
+    err=set_point-current_p
+    P=Kp*(err-last_err)
+    I=Ki*err
+    D=Kd*(err+next_err-2*last_err)
+    u=P+I+D
+    next_err=last_err
+    last_err=err
+    return u
+
+def sigle_pole_lpf(unfiltered_p,filtered_p):
+    return L_co*unfiltered_p+(1-L_co)*filtered_p
 
 if __name__== '__main__':
-    current_pressure=read(sensor_address,0,range_max)
-    while True:
-        a=0
-#         valve_on(65535)
-        current_pressure=read(sensor_address,0,range_max)
-        print(current_pressure)
+    current_pressure_f=read(sensor_f,range_f_min,range_f_max)
+    pump_off()
+    P_init=0
+    release_speed_f=max_pwm_f
+    release_speed_b=max_pwm_b
+    frontvalve_off()
+    backvalve_off()
+#     release()
+    while current_pressure_f< Target_Pressure:
+        pump_on()
+        midval_on()
+        current_pressure_f=read(sensor_f,range_f_min,range_f_max)
+        current_pressure_b=read(sensor_b,range_b_min,range_b_max)
+        print(current_pressure_f,current_pressure_b)
         sleep(0.1)
-#         while a<65535:
-#             a=a+1000
-# #             print(a)
-#             valve_on(a)
-#             sleep(0.5)
+    
+    pump_off()
+    midval_off()
+    time.sleep_ms(1000)
+    init_set=0
+    file_difference=open("difference_pressure_f.csv","w")
+    while current_pressure_f>P_end:
+#         print(int(release_speed))
+        frontvalve_on(int(release_speed_f))
+        backvalve_on(int(release_speed_b))
+#         backvalve_on(max_pwm_b)
+#         frontvalve_on(min_pwm_f)
+        current_pressure_f=read(sensor_f,range_f_min,range_f_max)
+        current_pressure_b=read(sensor_b,range_b_min,range_b_max)
+        current_pressure_m=read(sensor_m,range_m_min,range_m_max)
+        
+        if(init_set==0):
+            P_init=current_pressure_f
+            P_init_b=current_pressure_b
+            start = time.ticks_ms()
+            init_set=1
+            
+        delta = time.ticks_diff(time.ticks_ms(), start)/1000
+        P_ref=calculate_ref(P_init,T_end,delta)
+#         print(k,P_init_b)
+        P_ref_b=calculate_ref_b(k,P_init_b,delta)
+
+        u_f=PID_control(Kp_f,Ki_f,Kd_f,P_ref,current_pressure_f,delta)
+        release_speed_f=release_speed_f+u_f
+        release_speed_f=value_calibrate_f(release_speed_f)
+        
+        u_b=PID_control(Kp_b,Ki_b,Kd_b,P_ref_b,current_pressure_b,delta)
+        release_speed_b=release_speed_b+u_b
+        release_speed_b=value_calibrate_b(release_speed_b)
+        
+        
+#         print(0,current_pressure_m,15)
+#         print(0,current_pressure_f,current_pressure_b,200)
+        print(0,P_ref,current_pressure_f,200)
+#         print(0,P_ref_b,current_pressure_b,200)
+#         print(0,P_ref-P_ref_b,2)
+        
+        file_difference.write(str(delta)+","+str(P_ref)+","+str(current_pressure_f)+"\n")
+#         file_filtered.write(str(delta)+","+str(current_pressure)+","+str(lpf_filtered_p)+"\n")# data is written as a string in the C
+        file_difference.flush()
+#         time.sleep_us(read_delay)
+    release()
+    
+    
+    
+    
+    
+    
+    
+######################################################################    
+# #     current_pressure=read(sensor_2,0,range_1)
+#     midval_off()
+#     while True:
+#         pump_on()
+#         
+#         backvalve_off()
+#         frontvalve_off()
+#         current_pressure=read(sensor_3,range_3_min,range_3_max)
+# #         if current_pressure<-50:
+# #             pump_on()
+# #         pump_off()   
+#         print(current_pressure)
+#         sleep(1)
