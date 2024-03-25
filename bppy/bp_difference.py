@@ -16,7 +16,7 @@ pump = Pin(13,Pin.OUT)
 max_pwm_f=35000
 min_pwm_f=21000
 
-max_pwm_b=35000
+max_pwm_b=40000
 min_pwm_b=10000
 
 Target_Pressure=170
@@ -24,26 +24,35 @@ Target_Pressure=170
 P_end=60
 T_end=40
 
-Kp_f=200
-Ki_f=1300
+Kp_f=2000
+Ki_f=10
 Kd_f=0
 
-Kp_b=80
-Ki_b=500
+Kp_b=2500
+Ki_b=50
 Kd_b=0
 
-last_err=0
-next_err=0
-err=0
+last_err_f=0
+next_err_f=0
+err_f=0
+
+last_err_b=0
+next_err_b=0
+err_b=0
+
+
 k=0
 filtered_p=0
 
 
 i2c = I2C(id=0,scl=Pin(9),sda=Pin(8),freq=100000)
 # pump = Pin(16,Pin.OUT)
-sensor_b=0x29
+# sensor_b=0x29
+# sensor_m=0x28
+# sensor_f=0x30
 sensor_m=0x28
-sensor_f=0x30
+sensor_f=0x28
+sensor_b=0x28
 
 range_b_max=300
 range_b_min=0
@@ -114,17 +123,30 @@ def value_calibrate_b(v):
     if(v>max_pwm_b or v<min_pwm_b): return max_pwm_b
     else: return v
     
-def PID_control(Kp,Ki,Kd,set_point,current_p,current_t):
-    global err
-    global last_err
-    global next_err
-    err=set_point-current_p
-    P=Kp*(err-last_err)
-    I=Ki*err
-    D=Kd*(err+next_err-2*last_err)
+def PID_control_f(Kp,Ki,Kd,set_point,current_p,current_t):
+    global err_f
+    global last_err_f
+    global next_err_f
+    err_f=set_point-current_p
+    P=Kp*(err_f-last_err_f)
+    I=Ki*err_f
+    D=Kd*(err_f+next_err_f-2*last_err_f)
     u=P+I+D
-    next_err=last_err
-    last_err=err
+    next_err_f=last_err_f
+    last_err_f=err_f
+    return u
+
+def PID_control_b(Kp,Ki,Kd,set_point,current_p,current_t):
+    global err_b
+    global last_err_b
+    global next_err_b
+    err_b=set_point-current_p
+    P=Kp*(err_b-last_err_b)
+    I=Ki*err_b
+    D=Kd*(err_b+next_err_b-2*last_err_b)
+    u=P+I+D
+    next_err_b=last_err_b
+    last_err_b=err_b
     return u
 
 def sigle_pole_lpf(unfiltered_p,filtered_p):
@@ -143,8 +165,8 @@ if __name__== '__main__':
         pump_on()
         midval_on()
         current_pressure_f=read(sensor_f,range_f_min,range_f_max)
-        current_pressure_b=read(sensor_b,range_b_min,range_b_max)
-        print(current_pressure_f,current_pressure_b)
+#         current_pressure_b=read(sensor_b,range_b_min,range_b_max)
+#         print(current_pressure_f,current_pressure_b)
         sleep(0.1)
     
     pump_off()
@@ -173,21 +195,21 @@ if __name__== '__main__':
 #         print(k,P_init_b)
         P_ref_b=calculate_ref_b(k,P_init_b,delta)
 
-        u_f=PID_control(Kp_f,Ki_f,Kd_f,P_ref,current_pressure_f,delta)
+        u_f=PID_control_f(Kp_f,Ki_f,Kd_f,P_ref,current_pressure_f,delta)
         release_speed_f=release_speed_f+u_f
         release_speed_f=value_calibrate_f(release_speed_f)
-        
-        u_b=PID_control(Kp_b,Ki_b,Kd_b,P_ref_b,current_pressure_b,delta)
+#         
+        u_b=PID_control_b(Kp_b,Ki_b,Kd_b,P_ref_b,current_pressure_b,delta)
         release_speed_b=release_speed_b+u_b
         release_speed_b=value_calibrate_b(release_speed_b)
-        
+#         
         
 #         print(0,current_pressure_m,15)
 #         print(0,current_pressure_f,current_pressure_b,200)
-        print(0,P_ref,current_pressure_f,200)
 #         print(0,P_ref_b,current_pressure_b,200)
+        print(0,P_ref,current_pressure_f,200)
 #         print(0,P_ref-P_ref_b,2)
-        
+#         sleep(0.01)
         file_difference.write(str(delta)+","+str(P_ref)+","+str(current_pressure_f)+"\n")
 #         file_filtered.write(str(delta)+","+str(current_pressure)+","+str(lpf_filtered_p)+"\n")# data is written as a string in the C
         file_difference.flush()

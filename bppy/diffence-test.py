@@ -7,16 +7,16 @@ H_co=0.4
 L_co=0.9
 
 # valve = PWM(Pin(9))
-valve = PWM(Pin(11))
+valve = PWM(Pin(15))
 valve.freq(100000)
 
-i2c = I2C(id=1,scl=Pin(7),sda=Pin(6),freq=100000)
+i2c = I2C(id=0,scl=Pin(9),sda=Pin(8),freq=100000)
 # i2c0 = I2C(id=0,scl=Pin(9),sda=Pin(8),freq=100000)
 # i2c = I2C(id=0,scl=Pin(9),sda=Pin(8),freq=100000)
-pump = Pin(10,Pin.OUT)
+pump = Pin(13,Pin.OUT)
 # valve = machine.Pin(27,machine.Pin.OUT)
-max_pwm=30000
-min_pwm=2000
+max_pwm=40000
+min_pwm=10000
 Target_Pressure=180
 read_delay=10
 P_end=20
@@ -136,7 +136,7 @@ if __name__== '__main__':
     hpf_filtered_p=0
     lpf_filtered_p=0
     previous_p=0
-    file_filtered=open("pulse_pressure.csv","w")
+    file_filtered=open("difference_test_pressure.csv","w")
     while current_pressure>P_end:
 #         print(int(release_speed))
         valve_on(int(release_speed))
@@ -156,19 +156,19 @@ if __name__== '__main__':
         release_speed=release_speed+u
         release_speed=value_calibrate(release_speed)
             
-        hpf_filtered_p=sigle_pole_hpf(current_pressure,hpf_filtered_p,previous_p)
-        previous_p=current_pressure
-        lpf_filtered_p=sigle_pole_lpf(hpf_filtered_p,lpf_filtered_p)
-        if(lpf_filtered_p<0 and calculate_mp==0):calculate_mp=1
-        if(calculate_mp==1):peak_hb(current_pressure,lpf_filtered_p)
+#         hpf_filtered_p=sigle_pole_hpf(current_pressure,hpf_filtered_p,previous_p)
+#         previous_p=current_pressure
+#         lpf_filtered_p=sigle_pole_lpf(hpf_filtered_p,lpf_filtered_p)
+#         if(lpf_filtered_p<0 and calculate_mp==0):calculate_mp=1
+#         if(calculate_mp==1):peak_hb(current_pressure,lpf_filtered_p)
 #         peak_hb(current_pressure,lpf_filtered_p)
         print(0,current_pressure,P_ref,range_max*0.75)
 #         if(lpf_filtered_p<2):
 #             print(-0.5,lpf_filtered_p,0.5)
 #             file_filtered.write(str(delta)+","+","+str(lpf_filtered_p)+"\n")
-        pulse=current_pressure-P_ref
-        file_filtered.write(str(delta)+","+str(pulse)+"\n")
-#         file_filtered.write(str(delta)+","+str(P_ref)+","+str(current_pressure)+"\n")
+#         pulse=current_pressure-P_ref
+#         file_filtered.write(str(delta)+","+str(pulse)+"\n")
+        file_filtered.write(str(delta)+","+str(P_ref)+","+str(current_pressure)+"\n")
 #         file_filtered.write(str(delta)+","+str(current_pressure)+"\n")
 #         file_filtered.write(str(delta)+","+str(current_pressure)+","+str(lpf_filtered_p)+"\n")# data is written as a string in the C
         file_filtered.flush()
@@ -178,3 +178,4 @@ if __name__== '__main__':
     sys_dias(mp)
 
     
+
