@@ -136,10 +136,11 @@ if __name__== '__main__':
     hpf_filtered_p=0
     lpf_filtered_p=0
     previous_p=0
-    file_filtered=open("original_pressure.csv","w")
+    file_filtered=open("drop_pressure.csv","w")
     while current_pressure>P_end:
 #         print(int(release_speed))
-        valve_on(int(release_speed))
+#         valve_on(int(release_speed))
+        valve_on(10000)
 #         valve_on(max_pwm)
         current_pressure=read(sensor_address,0,range_max)
 #         current_pressure=read_druck()
@@ -151,10 +152,10 @@ if __name__== '__main__':
             
         delta = time.ticks_diff(time.ticks_ms(), start)/1000
         P_ref=calculate_ref(P_init,T_end,delta)
-        
-        u=PID_control(Kp,Ki,Kd,P_ref,current_pressure,delta)
-        release_speed=release_speed+u
-        release_speed=value_calibrate(release_speed)
+#         
+#         u=PID_control(Kp,Ki,Kd,P_ref,current_pressure,delta)
+#         release_speed=release_speed+u
+#         release_speed=value_calibrate(release_speed)
         
         print(0,current_pressure,P_ref)
         file_filtered.write(str(delta)+","+str(current_pressure)+"\n")
