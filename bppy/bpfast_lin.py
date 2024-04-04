@@ -24,7 +24,7 @@ T_end=40
 sensor_address=0x28
 range_max=400
 Kp=400
-Ki=100
+Ki=50
 # Kd=0.015
 Kd=0
 last_err=0
@@ -77,16 +77,16 @@ def read(address,pmin,pmax):
     pressure=round(pressure,2)
     return pressure*0.75
 
-def read0(address):
-    data=i2c0.readfrom(address,4)
-    pres=(data[1]<<16)+(data[2]<<8)+data[3]
-    return pres
+# def read0(address):
+#     data=i2c0.readfrom(address,4)
+#     pres=(data[1]<<16)+(data[2]<<8)+data[3]
+#     return pres
 
-def read_druck():
-    adccount=read0(sensor_address)
-    druck=(adccount-8620000)/5318
-    druck=round(druck,2)
-    return druck
+# def read_druck():
+#     adccount=read0(sensor_address)
+#     druck=(adccount-8620000)/5318
+#     druck=round(druck,2)
+#     return druck
 
 def sigle_pole_hpf(current_p,filtered_p,previous_p):
 
@@ -106,18 +106,10 @@ def peak_hb(current_p,filtered_p):
         peak=filtered_p
         mp=current_p
     return mp
-
-
-def sys_dias(mp):
-    sys=mp*1.1*0.75
-    dias=mp*0.8*0.75
-    print("the systolic pressure is: ",sys,"mmHg")
-    print("the diastolic pressure is: ",dias,"mmHg")
-    
+   
 
 if __name__== '__main__':
     current_pressure=read(sensor_address,0,range_max)
-#     current_pressure=read_druck()
     pump_off()
     P_init=0
     release_speed=max_pwm
@@ -132,11 +124,6 @@ if __name__== '__main__':
     pump_off()
     time.sleep_ms(1000)
     init_set=0
-#     calculate_mp=0
-#     hpf_filtered_p=0
-#     lpf_filtered_p=0
-#     previous_p=0
-    # file_filtered=open("pwm15000_pressure.csv","w")
     while current_pressure>P_end:
 #         print(int(release_speed))
         valve_on(int(release_speed))
@@ -144,7 +131,6 @@ if __name__== '__main__':
 #         valve_on(15000)
 #         sleep(0.1)
         current_pressure=read(sensor_address,0,range_max)
-#         current_pressure=read_druck()
         if(init_set==0):
             P_init=current_pressure
             f=current_pressure
@@ -157,33 +143,12 @@ if __name__== '__main__':
         u=PID_control(Kp,Ki,Kd,P_ref,current_pressure,delta)
         release_speed=release_speed+u
         release_speed=value_calibrate(release_speed)
-#         print(int(release_speed))
-            
-#         hpf_filtered_p=sigle_pole_hpf(current_pressure,hpf_filtered_p,previous_p)
-#         previous_p=current_pressure
-#         lpf_filtered_p=sigle_pole_lpf(hpf_filtered_p,lpf_filtered_p)
-#         if(lpf_filtered_p<0 and calculate_mp==0):calculate_mp=1
-#         if(calculate_mp==1):peak_hb(current_pressure,lpf_filtered_p)
-#         peak_hb(current_pressure,lpf_filtered_p)
-#         print(0,current_pressure,P_ref,range_max*0.75)
 
-#         if(lpf_filtered_p<2):
-#             print(-0.5,lpf_filtered_p,0.5)
-#             file_filtered.write(str(delta)+","+","+str(lpf_filtered_p)+"\n")
-#         pulse=current_pressure-P_ref
-#         print(pulse)
-        
-#         file_filtered.write(str(delta)+","+str(pulse)+"\n")
         # print(delta,current_pressure,P_ref)
-        print(delta,',',current_pressure,',',P_ref)
-        # file_filtered.write(str(delta)+","+str(P_ref)+","+str(current_pressure)+"\n")
-#         file_filtered.write(str(delta)+","+str(current_pressure)+"\n")
-#         file_filtered.write(str(delta)+","+str(current_pressure)+"\n")
-#         file_filtered.write(str(delta)+","+str(current_pressure)+","+str(lpf_filtered_p)+"\n")# data is written as a string in the C
-        # file_filtered.flush()
-#         time.sleep_us(read_delay)
+        pulse=current_pressure-P_ref
+        # print(delta,',',current_pressure,',',P_ref,',',pulse)
+        print(delta,',',pulse)
     release()
-    # print(mp)
-    # sys_dias(mp)
+
 
     

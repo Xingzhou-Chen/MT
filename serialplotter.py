@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QCh
 from PyQt5.QtCore import QTimer
 
 class SerialPlotter(QMainWindow):
-    def __init__(self, port='COM7', baudrate=115200):
+    def __init__(self, port="/dev/cu.usbmodem14201", baudrate=9600):
         super().__init__()
         
         self.serial_port = None
@@ -84,7 +84,7 @@ class SerialPlotter(QMainWindow):
         port = self.port_dropdown.currentText()
         self.open_serial_port(port)
 
-    def open_serial_port(self, port, baudrate=115200):
+    def open_serial_port(self, port, baudrate=9600):
         try:
             if self.serial_port:
                 self.serial_port.close()
@@ -106,10 +106,12 @@ class SerialPlotter(QMainWindow):
 
 
     def update_plot(self):
-        while self.serial_port != None and self.serial_port.in_waiting > 0:
+        # while self.serial_port != None and self.serial_port.in_waiting > 0:
+        while self.serial_port != None :
             line = self.serial_port.readline().decode().strip()
             try:
                 values = line.split(',')
+                # values = line
                 for i, val in enumerate(values):    
                     if i not in self.data:
                         self.data[i] = np.zeros(500)  # Initialize with zeros

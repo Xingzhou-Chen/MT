@@ -25,8 +25,8 @@ if __name__== '__main__':
 #     writeadr=0x00<<1|0
 #     readadr=0x00<<1|1
 #     i2c.start()
-    i2c.writeto(0x00,b'\x01')
-    i2c.readfrom(0x00,4)
+#     i2c.writeto(0x00,b'\x01')
+    i2c.readfrom(0x00,1)
 #     print(ack)
 #     i2c.readfrom(0x01,4)
 #     i2c.write(b'\x00')

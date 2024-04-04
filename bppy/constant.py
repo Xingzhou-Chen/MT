@@ -10,7 +10,7 @@ L_co=0.9
 valve = PWM(Pin(11))
 valve.freq(100000)
 
-i2c = I2C(id=1,scl=Pin(7),sda=Pin(6),freq=400000)
+i2c = I2C(id=1,scl=Pin(7),sda=Pin(6),freq=1000000)
 # i2c0 = I2C(id=0,scl=Pin(9),sda=Pin(8),freq=100000)
 # i2c = I2C(id=0,scl=Pin(9),sda=Pin(8),freq=100000)
 pump = Pin(10,Pin.OUT)
@@ -64,24 +64,25 @@ if __name__== '__main__':
     
     pump_off()
     time.sleep_ms(1000)
-    file_filtered=open("constant_pressure.csv","w")
+#     file_filtered=open("constant_pressure.csv","w")
     t=0
     start = time.ticks_ms()
-    while True:
-        current_pressure=read(sensor_address,0,range_max)
-        print(current_pressure)
-#     while t<500:
-# #         print(int(release_speed))
-#         valve_off()
-# #         valve_on(max_pwm)
+#     while True:
 #         current_pressure=read(sensor_address,0,range_max)
 #         print(current_pressure)
-#         delta = time.ticks_diff(time.ticks_ms(), start)/1000
+    while t<10000:
+#         print(int(release_speed))
+        valve_off()
+#         valve_on(max_pwm)
+        current_pressure=read(sensor_address,0,range_max)
+        delta = time.ticks_diff(time.ticks_ms(), start)/1000
+        print(delta,",",current_pressure)
 #         file_filtered.write(str(delta)+","+str(current_pressure)+"\n")
 #         file_filtered.flush()
-#         t=t+1
+        t=t+1
 # #         print(t)
-# #         time.sleep_us(read_delay)
+        sleep(0.05)
+#         time.sleep_us(1000)
 #     release()
 
     

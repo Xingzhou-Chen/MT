@@ -14,22 +14,22 @@ valve_m = Pin(14,Pin.OUT)
 pump = Pin(13,Pin.OUT)
 
 max_pwm_f=35000
-min_pwm_f=21000
+min_pwm_f=2000
 
 max_pwm_b=40000
-min_pwm_b=10000
+min_pwm_b=2000
 
 Target_Pressure=160
 
 
-P_end=60
+P_end=30
 T_end=40
 
-Kp_f=1500
-Ki_f=100
+Kp_f=300
+Ki_f=80
 Kd_f=0
 
-Kp_b=2500
+Kp_b=600
 Ki_b=50
 Kd_b=0
 
@@ -168,7 +168,7 @@ if __name__== '__main__':
         current_pressure_f=read(sensor_f,range_f_min,range_f_max)
         current_pressure_b=read(sensor_b,range_b_min,range_b_max)
 #         current_pressure_m=read(sensor_m,range_m_min,range_m_max)
-        print(current_pressure_f,current_pressure_b)
+        # print(current_pressure_f,current_pressure_b)
         sleep(0.1)
     
     pump_off()
@@ -177,7 +177,7 @@ if __name__== '__main__':
     current_pressure_f=read(sensor_f,range_f_min,range_f_max)
     current_pressure_b=read(sensor_b,range_b_min,range_b_max)
     current_pressure_m=read(sensor_m,range_m_min,range_m_max)
-    print(current_pressure_f,current_pressure_b)
+    # print(current_pressure_f,current_pressure_b)
     time.sleep_ms(1000)
     
 #     while current_pressure_f< current_pressure_b+20:
@@ -194,20 +194,7 @@ if __name__== '__main__':
     time.sleep_ms(1000)
 #     current_pressure_m=read(sensor_m,range_m_min,range_m_max)
     init_set=0
-    # file_difference=open("difference_pressure_f.csv","w")
-    
-#     while current_pressure_m>20 or current_pressure_m<-20:
-# #         print(current_pressure_m)
-#         current_pressure_m=read(sensor_m,range_m_min,range_m_max)
-# #         current_pressure_f=read(sensor_f,range_f_min,range_f_max)
-# #         current_pressure_b=read(sensor_b,range_b_min,range_b_max)
-# #         print(current_pressure_f,current_pressure_b,current_pressure_m)
-#         if current_pressure_m>20:
-#             frontvalve_on(adjust_pwm)
-# #             backvalve_off()
-#         else:
-#             backvalve_on(adjust_pwm)
-#             frontvalve_off()
+
     frontvalve_off()
     backvalve_off()
         
@@ -215,10 +202,8 @@ if __name__== '__main__':
 #         print(int(release_speed))
         frontvalve_on(int(release_speed_f))
         backvalve_on(int(release_speed_b))
-        backvalve_on(max_pwm_b)
+        # backvalve_on(max_pwm_b)
 #         frontvalve_on(max_pwm_f)
-#         frontvalve_on(65535)
-#         frontvalve_off()
         current_pressure_f=read(sensor_f,range_f_min,range_f_max)
         current_pressure_b=read(sensor_b,range_b_min,range_b_max)
         current_pressure_m=read(sensor_m,range_m_min,range_m_max)
@@ -243,18 +228,9 @@ if __name__== '__main__':
         release_speed_b=value_calibrate_b(release_speed_b)
 #         
         
-#         print(-30,current_pressure_m,30)
-        # print(current_pressure_m)
-        print(current_pressure_f,current_pressure_b)
-        print(delta,",",current_pressure_f,",",P_ref)
-#         print(0,P_ref_b,current_pressure_b,200)
-#         print(0,P_ref,current_pressure_f,200)
-#         print(0,P_ref-P_ref_b,2)
-#         sleep(0.01)
-        # file_difference.write(str(delta)+","+str(current_pressure_m)+"\n")
-#         file_difference.write(str(delta)+","+str(P_ref)+","+str(current_pressure_f)+"\n")
-#         file_difference.write(str(delta)+","+str(P_ref_b)+","+str(current_pressure_b)+"\n")
-#         file_difference.write(str(delta)+","+str(current_pressure_f)+","+str(current_pressure_b)+"\n")# data is written as a string in the C
-        # file_difference.flush()
-#         time.sleep_us(read_delay)
+        # print(current_pressure_f,current_pressure_b)
+        # print(delta,",",current_pressure_f,",",P_ref)
+        # print(delta,",",current_pressure_b,",",P_ref_b)
+        print(delta,",",current_pressure_m)
+        # print(delta,",",current_pressure_f,",",P_ref,",",current_pressure_b,",",P_ref_b,",",current_pressure_m)
     release()
