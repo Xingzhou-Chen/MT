@@ -24,10 +24,14 @@ i2c = I2C(id=0,scl=Pin(9),sda=Pin(8),freq=100000)
 # i2c = I2C(id=1,scl=Pin(7),sda=Pin(6),freq=100000)
 # print(i2c.scan())
 def config():
-    config=[b'\xaa',b'\x00',b'\x80']
-    i2c.writeto(0x00,config[0])
-    i2c.writeto(0x00,config[1])
-    i2c.writeto(0x00,config[2])
+    # config=[b'\xaa',b'\x00',b'\x80']
+    config=b'\xaa\x00\x80'
+    # for i in range(2):
+    #     i2c.writeto(0x00,config[i])
+    # # i2c.writeto(0x00,config[0])
+    # # i2c.writeto(0x00,config[1])
+    # # i2c.writeto(0x28,config[2])
+    i2c.writeto(0x00,config)
     sleep(0.03)
 
 def get():
