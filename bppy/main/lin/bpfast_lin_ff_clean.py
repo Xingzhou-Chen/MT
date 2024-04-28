@@ -2,7 +2,7 @@ from machine import I2C,Pin,PWM,UART
 import time 
 
 valve = PWM(Pin(11))
-valve.freq(100000)
+valve.freq(100_000)
 
 uart = UART(0, baudrate=115200, tx=Pin(0), rx=Pin(1))
 i2c = I2C(id=0,scl=Pin(9),sda=Pin(8),freq=1000000)
@@ -99,9 +99,7 @@ def read_hx():
     return pressure
 
 def pump_up(Target_Pressure):
-
     valve_off()
-    # current_pressure=read_hx()
     current_pressure=read(0x28,0,range_max)
 
     while current_pressure< Target_Pressure-50:
@@ -125,10 +123,8 @@ def pump_up(Target_Pressure):
     while current_pressure> Target_Pressure+1:
         valve_on(29000)
         current_pressure=read(0x28,0,range_max) 
-
     valve_off()    
     
-
 def set_init(current_pressure):
     P_init=current_pressure
     start = time.ticks_ms()
@@ -141,30 +137,27 @@ def regulation(delta,P_ref,current_pressure):
     return release_speed
 
 if __name__== '__main__':
-
     # set_up_hx()
     pump_up(Target_Pressure)                                        # state 1: pump up
     time.sleep_ms(5000)
-
     # current_pressure=read_hx()
     current_pressure=read(0x28,0,range_max)
     P_init,start=set_init(current_pressure)                         # determine the initial state
     k=calculate_k(P_init,P_end,T_end)
 
-    while current_pressure>P_end:                                   # deflation
-            
+    while current_pressure>P_end:                                   # deflation      
         # current_pressure=read_hx()
         current_pressure=read(0x28,0,range_max)
         delta = time.ticks_diff(time.ticks_ms(), start)/1000
         P_ref=calculate_ref(k,P_init,delta)
-        release_speed=regulation(delta,P_ref,current_pressure)       #state 2: regulation 
+        release_speed=regulation(delta,P_ref,current_pressure)      #state 2: regulation 
 
-        valve_on(int(release_speed))                                 #state3: release
+        valve_on(int(release_speed))                                #state3: release
 
         pulse=current_pressure-P_ref+10
         uart.write(str(delta)+" , "+str(pulse)+"\n")
 
-    release()
+    release()                                                       # final release
 
 
     
