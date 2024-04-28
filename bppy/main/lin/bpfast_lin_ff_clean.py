@@ -1,13 +1,13 @@
 from machine import I2C,Pin,PWM,UART 
 import time 
 
-valve = PWM(Pin(11))
-valve.freq(100_000)
-
 uart = UART(0, baudrate=115200, tx=Pin(0), rx=Pin(1))
 i2c = I2C(id=0,scl=Pin(9),sda=Pin(8),freq=1000000)
 i2c_ams = I2C(id=1,scl=Pin(7),sda=Pin(6),freq=1000000)
+
 pump = Pin(10,Pin.OUT)
+valve = PWM(Pin(11))
+valve.freq(100000)
 
 max_pwm=35000
 min_pwm=2000
