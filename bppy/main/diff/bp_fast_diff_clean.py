@@ -3,9 +3,11 @@ import time
 
 # uart = UART(0, baudrate=512000, tx=Pin(0), rx=Pin(1))
 uart = UART(0, baudrate=115200, tx=Pin(0), rx=Pin(1))
-i2c = I2C(id=0,scl=Pin(9),sda=Pin(8),freq=1000000)
-valve_f = PWM(Pin(15)).freq(100000)
-valve_b = PWM(Pin(16)).freq(100000)
+i2c = I2C(id=0,scl=Pin(9),sda=Pin(8),freq=1000_000)
+valve_f = PWM(Pin(15))
+valve_f.freq(100000)
+valve_b = PWM(Pin(16))
+valve_b.freq(100000)
 valve_m = Pin(14,Pin.OUT)
 pump = Pin(13,Pin.OUT)
 
@@ -179,8 +181,7 @@ def regulation_b(delta,P_ref_b,current_pressure_b):
     release_speed_b=value_calibrate_b(release_speed_b)
     return release_speed_b
 
-if __name__== '__main__':
-    
+if __name__== '__main__':   
     pump_up(Target_Pressure)                                            #state 1 : pump up to target pressure
     time.sleep_ms(1000)
 
