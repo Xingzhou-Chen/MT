@@ -3,13 +3,9 @@ import time
 
 # uart = UART(0, baudrate=512000, tx=Pin(0), rx=Pin(1))
 uart = UART(0, baudrate=115200, tx=Pin(0), rx=Pin(1))
-
-valve_f = PWM(Pin(15))
-valve_f.freq(100000)
-
-valve_b = PWM(Pin(16))
-valve_b.freq(100000)
-
+i2c = I2C(id=0,scl=Pin(9),sda=Pin(8),freq=1000000)
+valve_f = PWM(Pin(15)).freq(100000)
+valve_b = PWM(Pin(16)).freq(100000)
 valve_m = Pin(14,Pin.OUT)
 pump = Pin(13,Pin.OUT)
 
@@ -35,7 +31,6 @@ next_err_b=0
 err_b=0
 int_err_b=0
 
-i2c = I2C(id=0,scl=Pin(9),sda=Pin(8),freq=1000000)
 sensor_b=0x29
 sensor_m=0x28
 sensor_f=0x30
@@ -84,8 +79,8 @@ def read(address,pmin,pmax):
     pressureM=data[0]
     pressureL=data[1]
     pressure = (((256*(pressureM&0x3F)+pressureL)-1638.0)*(pmax-pmin)/13107+pmin)
-    pressure=round(pressure,2)
-    return pressure*0.75
+    pressure=round(pressure*0.75,2)
+    return pressure
 
 def release():
     valve_f.duty_u16(0)
@@ -212,4 +207,5 @@ if __name__== '__main__':
 
         current_pressure_m=read(sensor_m,range_m_min,range_m_max)
         uart.write(str(delta)+" , "+str(current_pressure_m)+"\n")
-    release()
+
+    release()                                                           #release
