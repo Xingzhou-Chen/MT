@@ -4,7 +4,7 @@ from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 import pandas as pd
 
-file0_path = "/Users/chenxingzhou/Desktop/MT/MT/bppy/pwm_b.csv"
+file0_path = "/Users/chenxingzhou/Desktop/MT/MT/bppy/data/pwm/pwm_b.csv"
 # file_path = "pressure.csv"
 df0 = pd.read_csv(file0_path)
 x=df0['t']
@@ -42,7 +42,7 @@ print("Predictions for new data:", y_pred)
 # Plotting the data and the linear regression line
 plt.scatter(x, y)
 plt.plot(X_new, y_pred, "r-")
-plt.xlabel("X")
-plt.ylabel("y")
+plt.xlabel("Time/s")
+plt.ylabel("PWM")
 plt.title("Linear Regression")
 plt.show()

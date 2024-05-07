@@ -1,8 +1,8 @@
 from machine import I2C,Pin,PWM,UART
 import time
 
-uart = UART(0, baudrate=512000, tx=Pin(0), rx=Pin(1))
-# uart = UART(0, baudrate=115200, tx=Pin(0), rx=Pin(1))
+# uart = UART(0, baudrate=512000, tx=Pin(0), rx=Pin(1))
+uart = UART(0, baudrate=115200, tx=Pin(0), rx=Pin(1))
 i2c = I2C(id=0,scl=Pin(9),sda=Pin(8),freq=1000_000)
 valve_f = PWM(Pin(15))
 valve_f.freq(100000)
@@ -13,14 +13,14 @@ pump = Pin(13,Pin.OUT)
 
 P_end=40
 T_end=40
-Target_Pressure=180
+Target_Pressure=160
 
-Kp_f=1500
-Ki_f=20
+Kp_f=1000
+Ki_f=1
 Kd_f=0
 
-Kp_b=2500
-Ki_b=20
+Kp_b=1600
+Ki_b=10
 Kd_b=0
 
 last_err_f=0
@@ -141,12 +141,11 @@ def PID_control_b(Kp,Ki,Kd,set_point,current_p):
 
 def feed_forward_f(t):
     # ff=34235.22-97.78*t+3.27*t**2-0.07*t**3# baudrate 115200
-    ff=35271.6-61.6*t#baudrate 512000
+    ff=30483.3-143.6*t
     return ff
 
 def feed_forward_b(t):
     # ff=33952.8-53.7*t# baudrate 115200
-    # ff=35476.6-83.4*t# baudrate 512000
     ff=34012.94-50.25*t+0.33*t**2-0.01*t**3
     return ff
 
@@ -171,9 +170,9 @@ def pump_up(Target_Pressure):
         current_pressure_b=read(sensor_b,range_b_min,range_b_max)
         if(current_pressure_b>Target_Pressure-10):midval_off()
         
-        # print("f:",current_pressure_f)
-        # print("b:",current_pressure_b)
-        # # print(current_pressure_f,current_pressure_b)
+        print("f:",current_pressure_f)
+        print("b:",current_pressure_b)
+        # print(current_pressure_f,current_pressure_b)
     
     while current_pressure_f> Target_Pressure+1: # release b
         frontvalve_on(29000)
@@ -215,8 +214,8 @@ if __name__== '__main__':
     current_pressure_b=read(sensor_b,range_b_min,range_b_max)  
     P_init_f,start=set_init(current_pressure_f)
     P_init_b=current_pressure_b
-    # print("init_f:",P_init_f)
-    # print("init_b:",P_init_b)
+    print("init_f:",P_init_f)
+    print("init_b:",P_init_b)
     k=calculate_k(P_init_f,P_end,T_end)
     difference=current_pressure_f-current_pressure_b                    # determine the initial state
 
@@ -235,7 +234,6 @@ if __name__== '__main__':
         backvalve_on(int(release_speed_b))                              #state 3: release Back 
 
         current_pressure_m=read(sensor_m,range_m_min,range_m_max)
-        # print(delta,",",current_pressure_m)
         uart.write(str(delta)+" , "+str(current_pressure_m)+"\n")
 
     release()                                                           #release

@@ -1,19 +1,26 @@
-import csv
-import numpy as np
-import matplotlib.pyplot as plt
+from machine import I2C,Pin,PWM,UART
+import time
 
-alpha=0.9
-belta=0.7
-
+H_co=0.9
+L_co=0.5
+i2c = I2C(id=0,scl=Pin(9),sda=Pin(8),freq=1000000)
             
 def sigle_pole_hpf(current_p,filtered_p,previous_p):
-
-    filtered_p=belta*(filtered_p + current_p - previous_p)
-#     previous_p=current_p
+    
+    filtered_p=H_co*(filtered_p + current_p - previous_p)
+    previous_p=current_p
     return filtered_p
 
-def sigle_pole_lpf(previous_p,filtered_p):
-    return alpha*previous_p+(1-alpha)*filtered_p
+def sigle_pole_lpf(unfiltered_p,filtered_p):
+    return L_co*unfiltered_p+(1-L_co)*filtered_p
+
+def read(address,pmin,pmax):
+    data=i2c.readfrom(address,4)
+    pressureM=data[0]
+    pressureL=data[1]
+    pressure = (((256*(pressureM&0x3F)+pressureL)-1638.0)*(pmax-pmin)/13107+pmin)
+    pressure=round(pressure,2)
+    return pressure*0.75
 
 if __name__== '__main__':
 #     a=0

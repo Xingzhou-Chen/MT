@@ -187,11 +187,11 @@ if __name__== '__main__':
         # print(delta,',',release_speed)
         # print(delta,',',int_err,',',err)
         # print(delta,current_pressure,P_ref)
-        pulse=current_pressure-P_ref+10
-        uart.write(str(delta)+" , "+str(pulse)+"\n")
+        # pulse=current_pressure-P_ref+10
+        # uart.write(str(delta)+" , "+str(pulse)+"\n")
         # print(delta,',',current_pressure,',',P_ref,',',pulse)
         # print(delta,',',pulse)
-        # print(delta,',',current_pressure,',',P_ref)
+        print(delta,',',current_pressure,',',P_ref)
         # print(delta,',',pulse)
     release()
 

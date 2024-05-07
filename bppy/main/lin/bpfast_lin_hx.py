@@ -114,8 +114,8 @@ if __name__== '__main__':
     P_init=0
     release_speed=max_pwm
     valve_off()
-    i2c.writeto(0x28,b'\xBD')
-    i2c.writeto(0x28,b'\xCE')
+    # i2c.writeto(0x28,b'\xBD')
+    # i2c.writeto(0x28,b'\xCE')
     while current_pressure< Target_Pressure:
         pump_on()
 #         current_pressure=read(sensor_address,0,range_max)

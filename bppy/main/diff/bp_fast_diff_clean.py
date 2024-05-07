@@ -151,14 +151,36 @@ def pump_up(Target_Pressure):
     backvalve_off()
     midval_on()
     current_pressure_f=read(sensor_f,range_f_min,range_f_max)
-    while current_pressure_f< Target_Pressure:
+    while current_pressure_f< Target_Pressure-50:
         pump_on()
+        # current_pressure=read_hx()
+        time.sleep(0.2)
+        pump_off()
+        current_pressure_f=read(sensor_f,range_f_min,range_f_max)
+
+    while current_pressure_f< Target_Pressure or current_pressure_b<Target_Pressure-20:
+        pump_on()
+        time.sleep(0.2)
+        pump_off()
+        time.sleep(0.3)
         current_pressure_f=read(sensor_f,range_f_min,range_f_max)
         current_pressure_b=read(sensor_b,range_b_min,range_b_max)
-        if(current_pressure_b>150):midval_off()
+        if(current_pressure_b>Target_Pressure-10):midval_off()
+        
+        print("f:",current_pressure_f)
+        print("b:",current_pressure_b)
         # print(current_pressure_f,current_pressure_b)
-        time.sleep(0.1)
     
+    while current_pressure_f> Target_Pressure+1: # release b
+        frontvalve_on(29000)
+        current_pressure_f=read(sensor_f,range_f_min,range_f_max) 
+    frontvalve_off() 
+
+    while current_pressure_b> Target_Pressure-19: # release b
+        backvalve_on(29000)
+        current_pressure_b=read(sensor_b,range_b_min,range_b_max) 
+    backvalve_off() 
+
     pump_off()
     midval_off()
 
@@ -184,11 +206,13 @@ def regulation_b(delta,P_ref_b,current_pressure_b):
 if __name__== '__main__':   
     pump_up(Target_Pressure)                                            #state 1 : pump up to target pressure
     time.sleep_ms(1000)
-
+    
     current_pressure_f=read(sensor_f,range_f_min,range_f_max)
     current_pressure_b=read(sensor_b,range_b_min,range_b_max)  
     P_init_f,start=set_init(current_pressure_f)
     P_init_b=current_pressure_b
+    print("init_f:",P_init_f)
+    print("init_b:",P_init_b)
     k=calculate_k(P_init_f,P_end,T_end)
     difference=current_pressure_f-current_pressure_b                    # determine the initial state
 
