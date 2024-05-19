@@ -83,9 +83,10 @@ def read_adc():
 
 def read_hx():
     adccount=read_adc()
-    pressure=(adccount-8518000)/5830.09
-    pressure=round(pressure,2)
-    return pressure
+    raw=((adccount/2**23)/8-0.12)*3.3
+    # pressure=(adccount-8518000)/5830.09
+    # pressure=round(pressure,2)
+    return raw
 
 def sigle_pole_hpf(current_p,filtered_p,previous_p):
 
@@ -109,19 +110,23 @@ def peak_hb(current_p,filtered_p):
 
 if __name__== '__main__':
 #     current_pressure=read(sensor_address,0,range_max)
-    current_pressure=read_hx()
+    # current_pressure=read_hx()
+    current_pressure=0
     pump_off()
     P_init=0
     release_speed=max_pwm
     valve_off()
-    # i2c.writeto(0x28,b'\xBD')
+    i2c.writeto(0x28,b'\xBD')
     # i2c.writeto(0x28,b'\xCE')
     while current_pressure< Target_Pressure:
         pump_on()
 #         current_pressure=read(sensor_address,0,range_max)
-        current_pressure=read_hx()
-        print(current_pressure)
-        sleep(0.1)
+        # current_pressure=read_hx()
+        adc=read_adc()
+        raw=read_hx()
+        # print(adc)
+        print(raw)
+        sleep(0.5)
     
     pump_off()
     time.sleep_ms(1000)

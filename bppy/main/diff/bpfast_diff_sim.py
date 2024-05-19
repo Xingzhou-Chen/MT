@@ -15,7 +15,7 @@ P_end=40
 T_end=40
 Target_Pressure=160
 
-Kp_f=1200
+Kp_f=1250
 Ki_f=50
 Kd_f=0
 
@@ -95,11 +95,11 @@ def calculate_k(P_init,P_end,T_end):
 
 def calculate_ref(k,P_init,current_t):
     P_ref_f=k*current_t+P_init
-    return P_ref_f
+    return round(P_ref_f,2)
 
 def calculate_ref_b(k,P_init,current_t):
     P_ref_b=k*current_t+P_init
-    return P_ref_b
+    return round(P_ref_b,2)
 
 def value_calibrate_f(v,t):
     if(v>max_pwm_f or v<min_pwm_f): return feed_forward_f(t)
@@ -152,7 +152,7 @@ def pump_up(Target_Pressure):
     backvalve_off()
     midval_on()
     current_pressure_f=read(sensor_f,range_f_min,range_f_max)
-    while current_pressure_f< Target_Pressure-50:
+    while current_pressure_f< Target_Pressure-40:
         pump_on()
         # current_pressure=read_hx()
         time.sleep(0.2)
@@ -188,7 +188,8 @@ def set_init(current_pressure):
     return P_init,start
 
 def single_pole_lpf(unfiltered_p,filtered_p,L_co):
-    return L_co*unfiltered_p+(1-L_co)*filtered_p
+    f=L_co*unfiltered_p+(1-L_co)*filtered_p
+    return round(f,2)
 
 def regulation_f(delta,P_ref_f,current_pressure_f):
     ff_f=feed_forward_f(delta)
@@ -215,13 +216,15 @@ if __name__== '__main__':
     k=calculate_k(P_init_f,P_end,T_end)
     difference=current_pressure_f-current_pressure_b                    # determine the initial state
     current_pressure_f_filtered=current_pressure_f
-
+    current_pressure_b_filtered=current_pressure_b
+    current_pressure_m_filtered=read(sensor_m,range_m_min,range_m_max)
     while current_pressure_f>P_end:                                     # deflation 
         
         current_pressure_f=read(sensor_f,range_f_min,range_f_max)
-        current_pressure_f_filtered=single_pole_lpf(current_pressure_f,current_pressure_f_filtered,0.9)
+        current_pressure_f_filtered=single_pole_lpf(current_pressure_f,current_pressure_f_filtered,0.5)
         current_pressure_b=read(sensor_b,range_b_min,range_b_max)
-        
+        current_pressure_b_filtered=single_pole_lpf(current_pressure_b,current_pressure_b_filtered,0.3)
+
         delta = time.ticks_diff(time.ticks_ms(), start)/1000
         P_ref_f=current_pressure_b+difference
         release_speed_f=regulation_f(delta,P_ref_f,current_pressure_f_filtered)  # state 2:regulation of Front
@@ -230,19 +233,24 @@ if __name__== '__main__':
         # print(delta,",",P_ref_f)
         delta = time.ticks_diff(time.ticks_ms(), start)/1000
         P_ref_b=calculate_ref_b(k,P_init_b,delta)
-        release_speed_b=regulation_b(delta,P_ref_b,current_pressure_b)  #state 2: regulation of Back 
+        release_speed_b=regulation_b(delta,P_ref_b,current_pressure_b_filtered)  #state 2: regulation of Back 
         backvalve_on(int(release_speed_b))                              #state 3: release Back 
 
         # pulse_b=current_pressure_b-P_ref_b+10
         current_pressure_m=read(sensor_m,range_m_min,range_m_max)
-        # print(delta,",",current_pressure_m)
-        # print(delta,",",current_pressure_f,",",current_pressure_b)
-        # print(delta,",",err_f)
+        current_pressure_m_filtered=single_pole_lpf(current_pressure_m,current_pressure_m_filtered,0.8)
+        # print(delta,",",current_pressure_m,",",current_pressure_m_filtered)
+        # print(delta,",",current_pressure_m_filtered)
+        # uart.write(str(delta)+" , "+str(pulse_b)+"\n")
+        # pulse_f=current_pressure_f-P_ref_f+10
+        # pulse_f_filtered=current_pressure_f_filtered-P_ref_f+10
+        # print(delta,",",pulse_f,",",pulse_f_filtered)
+
         pulse_b=current_pressure_b-P_ref_b+10
-        print(release_speed_b,end=",")
-        # pwm.append(release_speed_b)
-        # uart.write(str(delta)+" , "+str(current_pressure_m)+"\n")
-        uart.write(str(delta)+" , "+str(pulse_b)+"\n")
+        # print(delta,",",pulse_b)
+        print(delta,",",current_pressure_m_filtered)
+        # pulse_b_filtered=current_pressure_b_filtered-P_ref_b+10
+        # print(delta,",",pulse_b,",",pulse_b_filtered)
 
     release()                                                           #release
     # print(pwm)
