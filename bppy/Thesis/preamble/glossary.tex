@@ -1,0 +1,35 @@
+%% Gloassaries (acronyms, symbols and functions)
+%% Glossary entries will be created at the end of the file!
+%%
+%% (c) Thomas Hesse
+%%
+%% folder: preamble/
+
+%% acronyms:
+\newacronym{iid}{i.i.d.}{independently and identically distributed}
+%\newacronym[\glslongpluralkey={Markov Decision Processes}]{MDP}{MDP}{Markov Decision Process}
+%\newacronym[\glsshortpluralkey={KL}]{KL}{KL}{Kullback-Leibler divergence}
+
+%% OPERATORS
+\newglossary[opg]{operator}{opi}{opo}{List of Operators}
+\newglossaryentry{ln}{
+  sort        = {natural logarithm},
+  name        = {\ensuremath{\mathrm{ln}}},
+  symbol      = {\ensuremath{\mathrm{ln}\left(\; \bullet \;\right)} },
+  description = {the natural logarithm},
+  type        = operator
+}
+
+
+%% SYMBOLS
+\newglossary[syg]{symbol}{sys}{syo}{List of Symbols}
+\newglossaryentry{theta}{
+  sort        = {parameters theta},
+  name        = {\ensuremath{\cvec{\theta}}},
+  description = {vector of parameters from a probability distribution},
+  type        = symbol
+}
+
+
+%% CREATE GLOSSARY
+\makeglossaries

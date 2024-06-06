@@ -4,7 +4,7 @@ from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 import pandas as pd
 
-file0_path = "/Users/chenxingzhou/Desktop/MT/MT/bppy/data/pwm/pwm_b.csv"
+file0_path = "/Users/chenxingzhou/Desktop/MT/MT/bppy/data/pwm/pwm_b_new.csv"
 # file_path = "pressure.csv"
 df0 = pd.read_csv(file0_path)
 x=df0['t']

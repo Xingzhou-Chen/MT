@@ -11,16 +11,16 @@ valve_b.freq(100000)
 valve_m = Pin(14,Pin.OUT)
 pump = Pin(13,Pin.OUT)
 
-P_end=40
+P_end=60
 T_end=40
-Target_Pressure=160
+Target_Pressure=180
 
-Kp_f=1250
-Ki_f=50
+Kp_f=5000
+Ki_f=30
 Kd_f=0
 
-Kp_b=3500
-Ki_b=10
+Kp_b=10000
+Ki_b=50
 Kd_b=0
 
 last_err_f=0
@@ -46,10 +46,10 @@ range_m_min=0
 range_f_max=400
 range_f_min=0
 
-max_pwm_f=40000
+max_pwm_f=60000
 min_pwm_f=2000
 
-max_pwm_b=40000
+max_pwm_b=60000
 min_pwm_b=2000
 
 def pump_on():
@@ -102,7 +102,7 @@ def calculate_ref_b(k,P_init,current_t):
     return round(P_ref_b,2)
 
 def value_calibrate_f(v,t):
-    if(v>max_pwm_f or v<min_pwm_f): return feed_forward_f(t)
+    if(v>max_pwm_f or v<min_pwm_f): return max_pwm_f
     else: return v
 
 def value_calibrate_b(v):
@@ -140,11 +140,13 @@ def PID_control_b(Kp,Ki,Kd,set_point,current_p):
 
 def feed_forward_f(t):
     # ff=30445.33-239.64*t+6.65*t**2-0.13*t**3
-    ff=29304.01-36.38*t-1.58*t**2-0.00*t**3
+    # ff=29304.01-36.38*t-1.58*t**2-0.00*t**3
+    ff=-2*t**2-182.3*t+18220
     return ff
 
 def feed_forward_b(t):
-    ff=34012.94-50.25*t+0.33*t**2-0.01*t**3
+    # ff=34012.94-50.25*t+0.33*t**2-0.01*t**3
+    ff=-4.546*t**2-143.5*t+48080
     return ff
 
 def pump_up(Target_Pressure):
@@ -168,7 +170,7 @@ def pump_up(Target_Pressure):
         current_pressure_b=read(sensor_b,range_b_min,range_b_max)
         if(current_pressure_b>Target_Pressure-10):midval_off()
     
-    while current_pressure_f> Target_Pressure+1: # release b
+    while current_pressure_f> Target_Pressure+1: # release f
         frontvalve_on(29000)
         current_pressure_f=read(sensor_f,range_f_min,range_f_max) 
     frontvalve_off() 
@@ -208,7 +210,7 @@ def regulation_b(delta,P_ref_b,current_pressure_b):
 if __name__== '__main__':   
     pump_up(Target_Pressure)                                            #state 1 : pump up to target pressure
     time.sleep_ms(1000)
-    pwm=[]
+    # pwm=[]
     current_pressure_f=read(sensor_f,range_f_min,range_f_max)
     current_pressure_b=read(sensor_b,range_b_min,range_b_max)  
     P_init_f,start=set_init(current_pressure_f)
@@ -223,34 +225,47 @@ if __name__== '__main__':
         current_pressure_f=read(sensor_f,range_f_min,range_f_max)
         current_pressure_f_filtered=single_pole_lpf(current_pressure_f,current_pressure_f_filtered,0.5)
         current_pressure_b=read(sensor_b,range_b_min,range_b_max)
-        current_pressure_b_filtered=single_pole_lpf(current_pressure_b,current_pressure_b_filtered,0.3)
+        current_pressure_b_filtered=single_pole_lpf(current_pressure_b,current_pressure_b_filtered,0.2)
 
+        # backvalve_off()
         delta = time.ticks_diff(time.ticks_ms(), start)/1000
-        P_ref_f=current_pressure_b+difference
+        P_ref_f=current_pressure_b_filtered+difference
+        # P_ref_f=calculate_ref(k,P_init_f,delta)
         release_speed_f=regulation_f(delta,P_ref_f,current_pressure_f_filtered)  # state 2:regulation of Front
+        # release_speed_f=regulation_f(delta,P_ref_f,current_pressure_f)  # state 2:regulation of Front
         frontvalve_on(int(release_speed_f))                             # state 3: release Front
-
+        # frontvalve_off()
         # print(delta,",",P_ref_f)
         delta = time.ticks_diff(time.ticks_ms(), start)/1000
         P_ref_b=calculate_ref_b(k,P_init_b,delta)
         release_speed_b=regulation_b(delta,P_ref_b,current_pressure_b_filtered)  #state 2: regulation of Back 
+        # release_speed_b=regulation_b(delta,P_ref_b,current_pressure_b)  #state 2: regulation of Back 
         backvalve_on(int(release_speed_b))                              #state 3: release Back 
-
+        
         # pulse_b=current_pressure_b-P_ref_b+10
         current_pressure_m=read(sensor_m,range_m_min,range_m_max)
-        current_pressure_m_filtered=single_pole_lpf(current_pressure_m,current_pressure_m_filtered,0.8)
+        current_pressure_m_filtered=single_pole_lpf(current_pressure_m,current_pressure_m_filtered,0.9)
         # print(delta,",",current_pressure_m,",",current_pressure_m_filtered)
         # print(delta,",",current_pressure_m_filtered)
         # uart.write(str(delta)+" , "+str(pulse_b)+"\n")
         # pulse_f=current_pressure_f-P_ref_f+10
         # pulse_f_filtered=current_pressure_f_filtered-P_ref_f+10
-        # print(delta,",",pulse_f,",",pulse_f_filtered)
-
-        pulse_b=current_pressure_b-P_ref_b+10
+        # print(delta,",",current_pressure_f,",",P_ref_f)
+        # print(delta,",",pulse_f)
+        # print(delta,",",release_speed_f)
+        # frontvalve_off()
+        # pulse_b=current_pressure_b-P_ref_b+10
+        # pulse_b_filtered=current_pressure_b_filtered-P_ref_b+10
+        # pulse_f=current_pressure_f-P_ref_f+10
+        # pulse_f_filtered=current_pressure_f_filtered-P_ref_f+10
+        # print(delta,",",current_pressure_b,",",P_ref_b)
         # print(delta,",",pulse_b)
         print(delta,",",current_pressure_m_filtered)
+        # print(delta,",",current_pressure_m,",",current_pressure_m_filtered)
         # pulse_b_filtered=current_pressure_b_filtered-P_ref_b+10
         # print(delta,",",pulse_b,",",pulse_b_filtered)
+        # print(delta,",",pulse_f,",",pulse_f_filtered)
+        # print(delta,",",release_speed_b)
 
     release()                                                           #release
     # print(pwm)

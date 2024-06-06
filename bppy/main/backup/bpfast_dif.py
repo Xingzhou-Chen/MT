@@ -13,12 +13,12 @@ valve_b.freq(100000)
 valve_m = Pin(14,Pin.OUT)
 pump = Pin(13,Pin.OUT)
 
-max_pwm_f=35000
+max_pwm_f=60000
 min_pwm_f=2000
 init_pwm=28500
 
-max_pwm_b=33000
-min_pwm_b=31000
+max_pwm_b=60000
+min_pwm_b=2000
 
 Target_Pressure=180
 
@@ -26,7 +26,7 @@ Target_Pressure=180
 P_end=30
 T_end=40
 
-Kp_f=300
+Kp_f=3000
 Ki_f=50
 Kd_f=0
 
@@ -193,7 +193,7 @@ if __name__== '__main__':
 #         print(current_pressure_m)
         sleep(0.1)
 
-    print("inflation time: ",inflation_delta)
+    # print("inflation time: ",inflation_delta)
 
     pump_off()    
     time.sleep_ms(1000)
@@ -237,7 +237,8 @@ if __name__== '__main__':
         # print(delta,",",current_pressure_f,",",P_ref)
         # print(delta,",",current_pressure_b,",",P_ref_b)
         # print(delta,",",current_pressure_m)
-        print(release_speed_f)
+        # print(release_speed_f)
         pulse=current_pressure_f-P_ref
-        print(delta,",",current_pressure_f,",",P_ref,",",pulse,",",current_pressure_b,",",P_ref_b,",",current_pressure_m)
+        # print(delta,",",current_pressure_f,",",P_ref,",",pulse,",",current_pressure_b,",",P_ref_b,",",current_pressure_m)
+        print(delta,",",pulse)
     release()

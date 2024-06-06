@@ -1510,7 +1510,7 @@
     (property "ki_keywords" "R resistor")
     (path "/bb83c883-0c62-40e6-b448-b7788185bdd0")
     (attr smd)
-    (fp_text reference "R9" (at -0.05 -1.25) (layer "F.SilkS")
+    (fp_text reference "R9" (at 0.4275 -1.175) (layer "F.SilkS")
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp d1891a7c-13ab-47f1-a421-a377e1cc6b91)
     )

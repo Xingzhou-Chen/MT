@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 # 生成一些示例数据
-file0_path = "/Users/chenxingzhou/Desktop/MT/MT/bppy/pwm_lin.csv"
+file0_path = "/Users/chenxingzhou/Desktop/MT/MT/bppy/data/pwm/pwm_f_new.csv"
 # file_path = "pressure.csv"
 df0 = pd.read_csv(file0_path)
 x=df0['t']
@@ -13,7 +13,7 @@ x=x.to_numpy()
 y=y.to_numpy()
 
 # 进行多项式拟合
-degree = 4  # 多项式的次数
+degree = 2  # 多项式的次数
 coefficients = np.polyfit(x, y, degree)
 
 # 生成拟合的多项式函数

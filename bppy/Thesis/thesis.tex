@@ -1,0 +1,141 @@
+%% This is file `DEMO-TUDaThesis.tex' version 2.05 (2019/12/19),
+%% it is part of
+%% TUDa-CI -- Corporate Design for TU Darmstadt
+%% ----------------------------------------------------------------------------
+%%
+%%  Copyright (C) 2018--2019 by Marei Peischl <marei@peitex.de>
+%%
+%% ============================================================================
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%% http://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of LaTeX
+%% version 2008/05/04 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainers of this work are
+%%   Marei Peischl <tuda-ci@peitex.de>
+%%   Markus Lazanowski <latex@ce.tu-darmstadt.de>
+%%
+%% The development respository can be found at
+%% https://github.com/tudace/tuda_latex_templates
+%% Please use the issue tracker for feedback!
+%%
+%% ============================================================================
+%%
+% !TeX program = lualatex
+%%
+
+\documentclass[
+	ruledheaders=section, %Ebene bis zu der die Überschriften mit Linien abgetrennt werden, vgl. DEMO-TUDaPub
+	class=report, % Basisdokumentenklasse. Wählt die Korrespondierende KOMA-Script Klasse
+	thesis={type=master}, % Dokumententyp Thesis, für Dissertationen siehe die Demo-Datei DEMO-TUDaPhd
+	accentcolor=1c, % Auswahl der Akzentfarbe
+	custommargins=true, % Ränder werden mithilfe von typearea automatisch berechnet
+	marginpar=false, % Kopfzeile und Fußzeile erstrecken sich nicht über die Randnotizspalte
+	%BCOR=5mm,%Bindekorrektur, falls notwendig
+	parskip=half-, %Absatzkennzeichnung durch Abstand vgl. KOMA-Sript
+	fontsize=11pt, %Basisschriftgröße laut Corporate Design ist mit 9pt häufig zu klein
+	%logofile=example-image, %Falls die Logo Dateien nicht vorliegen
+	instbox=false,
+]{tudapub}
+
+
+%% add your chapters here
+\newcommand{\content}{%
+	\input{content/0-introduction}%
+	\input{content/1-motivation}%
+	\input{content/2-foundations}%
+	
+    % \input{content/7-implementation}%
+    % \input{content/8-Circuit Design}%
+    % \input{content/9-Algorithm}%
+    \input{content/10-Circuit Design}%
+    \input{content/11-Algorithm}
+    \input{content/3-experiments}%    
+    \input{content/4-results}%
+	\input{content/5-discussion}%
+	\input{content/6-outlook}%
+ }
+
+% Der folgende Block ist nur bei pdfTeX auf Versionen vor April 2018 notwendig
+\usepackage{iftex}
+\ifPDFTeX
+\usepackage[utf8]{inputenc} %kompatibilität mit TeX Versionen vor April 2018
+\fi
+
+\input{preamble/packages}
+\input{preamble/glossary}
+\input{preamble/tikzGraphs}
+
+\usepackage{biblatex}   % Literaturverzeichnis
+
+\bibliography{literature/lit}
+
+\usepackage{graphicx}
+\usepackage{caption}
+
+\begin{document}
+	\pagenumbering{gobble}                    % suppress page numbering
+	  
+	\Metadata{
+		title=Design of a Linear Pressure Release Method for Differential Blood Pressure Monitors,
+		author=Xingzhou Chen
+	}
+	
+	\title{Design of a Linear Pressure Release Method for Differential Blood Pressure Monitors}
+	% \subtitle{Deutscher Titel}
+	\author[X. Chen]{Xingzhou Chen} %optionales Argument ist die Signatur,
+	\birthplace{Birthplace} %Geburtsort, bei Dissertationen zwingend notwendig
+	\reviewer{Prof. Dr.-Ing. Klaus Hofmann \and Sebastian Zisch} %Gutachter
+	
+%	Diese Felder erden untereinander auf der Titelseite platziert.
+%	\department ist eine notwendige Angabe, siehe auch dem Abschnitt `Abweichung von den Vorgaben für die Titelseite'
+	\department{etit} % Das Kürzel wird automatisch ersetzt und als Studienfach gewählt, siehe Liste der Kürzel im Dokument.
+%	\institute{Intelligent Autonomous Systems}
+%	\group{Arbeitsgruppe}
+	\addTitleBoxLogo*{\includegraphics[width=0.75\linewidth]{img/iesLogo.png}}
+	
+	\submissiondate{July 01, 2024}
+	\examdate{\today}
+	
+%	\tuprints{urn=1234,printid=12345}
+%	\dedication{Für alle, die \TeX{} nutzen.}
+	
+	\maketitle
+	
+	\affidavit
+	
+	\input{meta/abstract}
+	
+	\tableofcontents
+	
+%	\chapter*{Figures~and~Tables}
+%	\begingroup                               % LOF and LOT on the same page
+%	\let\clearpage\relax
+%	\listoffigures\listoftables
+%	\endgroup
+%	
+%	\chapter*{Abbreviations,~Symbols and Operators}
+%	\glsaddall
+%	\printglossary[type=acronym,title=List of Abbreviations,style=iasThesisGeneral]
+%	\printglossary[type=symbol,style=iasThesisGeneral]
+%	\printglossary[type=operator,style=iasThesisOperators]
+	
+	\pagenumbering{arabic}                    % start normal page numbering
+	
+	\content                                  % insert the main content
+	
+	\cleardoublepage
+	% \printbibliography
+    \printbibliography
+    
+	\nocite{*}                                % display everything, even if not cited
+	
+	\cleardoublepage
+	\appendix\input{meta/appendix}            % insert appendix here if needed
+
+\end{document}

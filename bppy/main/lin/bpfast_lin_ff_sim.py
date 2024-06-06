@@ -12,8 +12,8 @@ P_end=40
 T_end=40
 Target_Pressure=160
 
-Kp=1200
-Ki=50
+Kp=1000
+Ki=30
 Kd=0
 
 last_err=0
@@ -149,6 +149,7 @@ if __name__== '__main__':
 
         # print(delta,",",current_pressure,",",P_ref)
         pulse=current_pressure-P_ref
+        pulse=round(pulse,2)
         print(delta,',',pulse)
         # print(delta,",",err)
         # uart.write(str(delta)+" , "+str(current_pressure_m)+"\n")

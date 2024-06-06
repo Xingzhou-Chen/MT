@@ -17,10 +17,10 @@ valve_b.freq(100000)
 valve_m = Pin(14,Pin.OUT)
 pump = Pin(13,Pin.OUT)
 
-max_pwm_f=40000
+max_pwm_f=50000
 min_pwm_f=2000
 
-max_pwm_b=40000
+max_pwm_b=50000
 min_pwm_b=2000
 
 Target_Pressure=160
