@@ -87,7 +87,7 @@ def feedorward(t):
 def pump_up(Target_Pressure):
     valve_off()
     current_pressure=read(sensor_address,range_min,range_max)
-    while current_pressure< Target_Pressure-50:
+    while current_pressure< Target_Pressure-40:
         pump_on()
         time.sleep(0.2)
         pump_off()
