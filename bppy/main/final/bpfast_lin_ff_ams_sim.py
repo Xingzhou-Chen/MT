@@ -46,7 +46,7 @@ def read(address,pmin,pmax):
     pressureM=data[0]
     pressureL=data[1]
     pressure = (((256*(pressureM&0x3F)+pressureL)-1638.0)*(pmax-pmin)/13107+pmin)
-    pressure=round(pressure*0.75,2)
+    pressure=pressure*0.75
     return pressure
 
 def release():

@@ -47,7 +47,7 @@ def read(address,pmin,pmax):
     pressureM=data[0]
     pressureL=data[1]
     pressure = (((256*(pressureM&0x3F)+pressureL)-1638.0)*(pmax-pmin)/13107+pmin)
-    pressure=round(pressure*0.75,2)
+    pressure=pressure*0.75
     return pressure
 
 def release():
@@ -59,7 +59,7 @@ def calculate_k(P_init,P_end,T_end):
 
 def calculate_ref(k,P_init,current_t):
     P_ref=k*current_t+P_init
-    return round(P_ref,2)
+    return P_ref
 
 def value_calibrate(v,t):
     if(v>max_pwm or v<min_pwm): return feedorward(t)
