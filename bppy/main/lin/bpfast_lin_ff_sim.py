@@ -107,8 +107,6 @@ def pump_up(Target_Pressure):
         current_pressure=read(sensor_address,range_min,range_max) 
     
     valve_off() 
-
-
     pump_off()
 
 def set_init(current_pressure):

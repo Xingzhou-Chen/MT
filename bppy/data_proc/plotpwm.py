@@ -6,34 +6,37 @@ import numpy as np
 # x=[]
 # y=[]
 
-file0_path = "/Users/chenxingzhou/Desktop/MT/MT/bppy/pwm10000_pressure.csv"
+file0_path = "/Users/chenxingzhou/Desktop/MT/MT/bppy/Thesis_Results/diffpwm/pwm3000.csv"
 # file_path = "pressure.csv"
 df0 = pd.read_csv(file0_path)
+df0.columns=['t','pwm']
 t0=df0['t']
-d0=df0['pwm=10000']
+d0=df0['pwm']
 
-file1_path = "/Users/chenxingzhou/Desktop/MT/MT/bppy/pwm12000_pressure.csv"
+file1_path = "/Users/chenxingzhou/Desktop/MT/MT/bppy/Thesis_Results/diffpwm/pwm4000.csv"
 # file_path = "pressure.csv"
 df1 = pd.read_csv(file1_path)
+df1.columns=['t','pwm']
 t1=df1['t']
-d1=df1['pwm=12000']
+d1=df1['pwm']
 # print(t1)
 
-file2_path = "/Users/chenxingzhou/Desktop/MT/MT/bppy/pwm15000_pressure.csv"
+file2_path = "/Users/chenxingzhou/Desktop/MT/MT/bppy/Thesis_Results/diffpwm/pwm5000.csv"
 # file_path = "pressure.csv"
 df2 = pd.read_csv(file2_path)
+df2.columns=['t','pwm']
 t2=df2['t']
-d2=df2['pwm=15000']
+d2=df2['pwm']
 # print(t2)
 
-plt.plot(t0, d0, label='PWM=10000')
-plt.plot(t1, d1, label='PWM=12000')
-plt.plot(t2, d2, label='PWM=15000')
+plt.plot(t0, d0, label='PWM=3000')
+plt.plot(t1, d1, label='PWM=4000')
+plt.plot(t2, d2, label='PWM=5000')
 
 # Add labels and title
 plt.xlabel('Time/s')
 plt.ylabel('Pressure/mmHg')
-plt.title('Deflation Curves with Different Restriction')
+# plt.title('Deflation Curves with Different Restriction')
 
 # Add legend
 plt.legend()

@@ -170,8 +170,8 @@ def pump_up(Target_Pressure):
         current_pressure_b=read(sensor_b,range_b_min,range_b_max)
         if(current_pressure_b>Target_Pressure-10):midval_off()
         
-        print("f:",current_pressure_f)
-        print("b:",current_pressure_b)
+        # print("f:",current_pressure_f)
+        # print("b:",current_pressure_b)
         # print(current_pressure_f,current_pressure_b)
     
     while current_pressure_f> Target_Pressure+1: # release b
@@ -214,8 +214,8 @@ if __name__== '__main__':
     current_pressure_b=read(sensor_b,range_b_min,range_b_max)  
     P_init_f,start=set_init(current_pressure_f)
     P_init_b=current_pressure_b
-    print("init_f:",P_init_f)
-    print("init_b:",P_init_b)
+    # print("init_f:",P_init_f)
+    # print("init_b:",P_init_b)
     k=calculate_k(P_init_f,P_end,T_end)
     difference=current_pressure_f-current_pressure_b                    # determine the initial state
 
@@ -234,6 +234,7 @@ if __name__== '__main__':
         backvalve_on(int(release_speed_b))                              #state 3: release Back 
 
         current_pressure_m=read(sensor_m,range_m_min,range_m_max)
-        uart.write(str(delta)+" , "+str(current_pressure_m)+"\n")
+        
+        # uart.write(str(delta)+" , "+str(current_pressure_m)+"\n")
 
     release()                                                           #release
