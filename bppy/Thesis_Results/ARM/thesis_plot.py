@@ -22,11 +22,11 @@ fig, axs = plt.subplots(3, 1, sharex=True, figsize=(10, 10),gridspec_kw={'hspace
 axs[0].plot(df1['Time'], df1['Pulse Amplitude'], color='r', label='Incremental Form PID')
 axs[0].legend(loc='upper right')
 axs[0].grid(False)
-axs[0].set_xlim(9,14.5)
-axs[0].set_ylim(-0.8,2)
+# axs[0].set_xlim(10,12)
+# axs[0].set_ylim(-0.5,1.45)
 # axs[0].set_xlim(10.4,11)
 # axs[0].set_ylim(-0.2,0.2)
-# axs[0].set_ylim(-1.2,2.6)
+axs[0].set_ylim(-1.2,2.6)
 
 # Plot the second dataset
 axs[1].plot(df2['Time'], df2['Pulse Amplitude'], color='b', label='Feedforward PID')
@@ -34,10 +34,10 @@ axs[1].plot(df2['Time'], df2['Pulse Amplitude'], color='b', label='Feedforward P
 axs[1].legend(loc='upper right')
 axs[1].grid(False)
 # axs[1].set_xlim(9,15)
-axs[1].set_ylim(-0.8,2)
+# axs[1].set_ylim(-0.5,1.45)
 # axs[1].set_xlim(10.4,10.8)
 # axs[1].set_ylim(-0.2,0.2)
-# axs[1].set_ylim(-1.2,2.6)
+axs[1].set_ylim(-1.2,2.6)
 
 
 # Plot the third dataset
@@ -46,10 +46,10 @@ axs[2].legend(loc='upper right')
 axs[2].grid(False)
 # axs[2].set_xlim(9,15)
 # axs[2].set_ylim(-1,2)
-axs[2].set_ylim(-0.8,2)
+# axs[2].set_ylim(-0.5,1.45)
 # axs[2].set_xlim(10.4,10.8)
 # axs[2].set_ylim(-0.2,0.2)
-# axs[2].set_ylim(-1.2,2.6)
+axs[2].set_ylim(-1.2,2.6)
 
 # Improve layout
 fig.text(0.01, 0.5, 'Pulse Amplitude/mmHg', va='center', rotation='vertical')

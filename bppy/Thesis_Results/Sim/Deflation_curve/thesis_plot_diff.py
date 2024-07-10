@@ -39,6 +39,7 @@ axs[1][1].plot(df4['Time'], df4['Difference Pressure'],color='m', label='Differe
 axs[1][1].text(0.5, 0.95, 'Step-wise Differential Sensor System', horizontalalignment='center', verticalalignment='center', transform=axs[1][1].transAxes)
 axs[1][1].legend(loc='upper right')
 axs[1][1].grid(False)
+axs[1][1].set_xlabel("Time/s")
 
 # Plot the third dataset
 axs[0][0].plot(df1['Time'], df1['Cuff Pressure'],color='r', label='Cuff Pressure')
@@ -59,6 +60,7 @@ axs[1][0].plot(df2['Time'], df2['Reference Pressure'],color='b', label='Referenc
 axs[1][0].text(0.5, 0.95, 'Feedforward PID', horizontalalignment='center', verticalalignment='center', transform=axs[1][0].transAxes)
 axs[1][0].legend(loc='upper right')
 axs[1][0].grid(False)
+axs[1][0].set_xlabel("Time/s")
 
 # Improve layout
 fig.text(0.01, 0.5, 'Pulse Amplitude/mmHg', va='center', rotation='vertical')

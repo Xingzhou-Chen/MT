@@ -47,7 +47,7 @@ axs[2].set_ylim(-1.4,2.7)
 # Plot the forth dataset
 # axs[3].plot(df4['Time'], df4['Pulse Amplitude'], color='g', label='Step Differential System')
 # axs[3].legend(loc='upper right')
-# axs[3].set_xlabel('Time')
+axs[2].set_xlabel('Time/s')
 # axs[3].grid(False)
 
 # Improve layout

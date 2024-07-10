@@ -2,20 +2,20 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load the CSV files
-p = '/Users/chenxingzhou/Desktop/MT/MT/bppy/Thesis_Results/PID/I_large.csv'
-pi = '/Users/chenxingzhou/Desktop/MT/MT/bppy/Thesis_Results/PID/I_large3.csv'
-# pid = '/Users/chenxingzhou/Desktop/MT/MT/bppy/Thesis_Results/PID/PID_arm.csv'
+p = '/Users/chenxingzhou/Desktop/MT/MT/bppy/Thesis_Results/PID/P_arm_large.csv'
+pi = '/Users/chenxingzhou/Desktop/MT/MT/bppy/Thesis_Results/PID/P_large4.csv'
+pid = '/Users/chenxingzhou/Desktop/MT/MT/bppy/Thesis_Results/PID/PID_arm.csv'
 # step = '/Users/chenxingzhou/Desktop/MT/MT/bppy/Experiments/feedforward/arm_owm1.csv'
 
 df1 = pd.read_csv(p)
 df2 = pd.read_csv(pi)
-# df3 = pd.read_csv(pid)
+df3 = pd.read_csv(pid)
 # df4 = pd.read_csv(step)
 
 # Rename the columns for clarityP_
 df1.columns = ['Time', 'Cuff Pressure', 'Reference Pressure','OWM']
 df2.columns = ['Time', 'Cuff Pressure', 'Reference Pressure','OWM']
-# df3.columns = ['Time', 'Cuff Pressure', 'Reference Pressure','OWM']
+df3.columns = ['Time', 'Cuff Pressure', 'Reference Pressure','OWM']
 # df4.columns = ['Time', 'Pulse Amplitude']
 
 # Create subplots
@@ -29,12 +29,13 @@ axs[0].legend(loc='upper right')
 axs[0].grid(False)
 
 # # Plot the second dataset
-# axs[1].plot(df2['Time'], df2['OWM'],color='r', label='Cuff Pressure')
-# # axs[1].plot(df2['Time'], df2['OWM'],color='b', label='Reference Pressure')
-# # axs[1].set_ylabel('Pulse Amplitude/mmHg')
-# # axs[1].text(0.5, 0.95, 'PI Controller', horizontalalignment='center', verticalalignment='center', transform=axs[1].transAxes)
-# axs[1].legend(loc='upper right')
-# axs[1].grid(False)
+axs[1].plot(df2['Time'], df2['OWM'],color='r', label='OWM')
+# axs[1].plot(df2['Time'], df2['Reference Pressure'],color='b', label='Reference Pressure')
+# axs[1].set_ylabel('Pulse Amplitude/mmHg')
+# axs[1].text(0.5, 0.95, 'PI Controller', horizontalalignment='center', verticalalignment='center', transform=axs[1].transAxes)
+axs[1].legend(loc='upper right')
+axs[1].grid(False)
+axs[1].set_xlabel('Time/s')
 
 # axs[2].plot(df3['Time'], df3['Cuff Pressure'],color='r', label='Cuff Pressure')
 # axs[2].plot(df3['Time'], df3['Reference Pressure'],color='b', label='Reference Pressure')
@@ -42,6 +43,7 @@ axs[0].grid(False)
 # axs[2].text(0.5, 0.95, 'PID Controller', horizontalalignment='center', verticalalignment='center', transform=axs[2].transAxes)
 # axs[2].legend(loc='upper right')
 # axs[2].grid(False)
+# axs[2].set_xlabel("Time/s")
 
 # # Plot the third dataset
 # axs[2].plot(df3['Time'], df3['Pulse Amplitude'], color='y', label='Differential System')
